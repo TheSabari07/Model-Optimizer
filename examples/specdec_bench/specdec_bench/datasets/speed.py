@@ -168,8 +168,8 @@ class SPEEDBench(Dataset):
             )
             if config_name == "train_test_split":
                 self.external_datasets[full_name] = (
-                    self.external_datasets[full_name]["train"],
-                    self.external_datasets[full_name]["test"],
+
+
                 )
         return self.external_datasets[full_name]
 
@@ -411,7 +411,7 @@ her fear and anger)."""
             [
                 f"{character_name}: {character_profile}"
                 for character_name, character_profile in external_dataset["character_profiles"][
-                    0
+
                 ].items()
                 if character_name != character and character_profile is not None
             ]
@@ -509,36 +509,36 @@ her fear and anger)."""
         elif BenchmarkDataset.HLE.value in example["source"]:
             if "qualitative" in speed_config:
                 external_dataset = self._get_external_dataset(
-                    BenchmarkDataset.HLE.value, config_name="test"
+
                 ).to_pandas()
                 src_id = example["src_id"]
                 example["turns"] = [
-                    external_dataset[external_dataset["id"] == src_id]["question"].iloc[0]
+
                 ]
             elif "throughput" in speed_config:
                 num_tokens = self._get_num_tokens_from_config(speed_config)
                 hle_train, hle_test = self._get_external_dataset(
-                    BenchmarkDataset.HLE.value, config_name="train_test_split"
+
                 )
                 hle_train = hle_train.to_pandas()
                 hle_train = hle_train[hle_train["image"] == ""]
                 hle_train["demonstration"] = hle_train.apply(
-                    lambda e: (
-                        "Question: " + e["question"] + "\n\nAnswer: " + e["rationale"] + "\n\n"
-                    ),
-                    axis=1,
+
+
+
+
                 )
                 hle_train["tokens"] = hle_train["demonstration"].apply(
-                    lambda e: tiktoken.get_encoding("o200k_base").encode(e, disallowed_special=())
+
                 )
                 src_id = example["src_id"]
                 hle_test = hle_test.to_pandas()
                 external_dataset_example = hle_test[hle_test["id"] == src_id].iloc[0]
                 self.hle_rng = getattr(self, "hle_rng", np.random.default_rng(42))
                 example["turns"] = [
-                    self._generate_hle_prompt(
-                        external_dataset_example, hle_train, num_tokens, self.hle_rng
-                    )
+
+
+
                 ]
             else:
                 raise ValueError(f"Invalid speed_config: {speed_config}")
@@ -555,8 +555,8 @@ her fear and anger)."""
                 example["turns"][0]
                 .removeprefix(f"{TURNS_PLACEHOLDER}\n\n")
                 .format(
-                    question=external_dataset_example["question_content"],
-                    starter_code=external_dataset_example["starter_code"],
+
+
                 )
             ]
 
@@ -624,13 +624,13 @@ her fear and anger)."""
             ].iloc[0]
             example["turns"] = [
                 self._pad_or_truncate_prompt(
-                    self._generate_stackselect_prompt(
-                        question=external_dataset_example["question"],
-                        answers=external_dataset_example["all_answers"],
-                        answer=external_dataset_example["answer"],
-                        num_tokens=num_tokens,
-                    ),
-                    num_tokens,
+
+
+
+
+
+
+
                 )
             ]
 
@@ -643,8 +643,8 @@ her fear and anger)."""
             external_dataset_example = external_dataset.select([int(src_id)])
             example["turns"] = [
                 self._pad_or_truncate_prompt(
-                    self._generate_textsort_prompt(external_dataset_example["prompt"][0]),
-                    num_tokens,
+
+
                 )
             ]
 
@@ -669,8 +669,8 @@ her fear and anger)."""
                 example["turns"][0]
                 .removeprefix(f"{TURNS_PLACEHOLDER}\n\n")
                 .format(
-                    role_name=role_name,
-                    role_description_and_catchphrases=role_description_and_catchphrases,
+
+
                 )
                 + "\n"
                 + external_dataset_example["question"].iloc[0]
@@ -708,13 +708,13 @@ her fear and anger)."""
             if not config_name_or_dataset_path_path.exists():
                 msg = ", ".join(get_args(config_type))
                 raise ValueError(
-                    f"Dataset path {config_name_or_dataset_path_path} does not exist or not one of the supported configs {msg}"
+
                 )
             if config_name_or_dataset_path_path.is_dir():
                 data_files = {
-                    "test": [
-                        str(path) for path in config_name_or_dataset_path_path.rglob("*.parquet")
-                    ]
+
+
+
                 }
             else:
                 data_files = {"test": [str(config_name_or_dataset_path_path)]}
@@ -732,8 +732,8 @@ her fear and anger)."""
                 # Strip HF metadata from the schema to avoid Feature parsing errors
                 schema = table.schema
                 if schema.metadata and b"huggingface" in schema.metadata:
-                    new_meta = {k: v for k, v in schema.metadata.items() if k != b"huggingface"}
-                    table = table.replace_schema_metadata(new_meta or None)
+
+
                 dataset = HFDataset(table)
         if self.num_samples is not None and self.num_samples < len(dataset):
             dataset = self._stratified_select(dataset, self.num_samples)
@@ -764,9 +764,9 @@ her fear and anger)."""
         for i in range(max_len):
             for c in cat_lists:
                 if i < len(c):
-                    interleaved.append(c[i])
-                    if len(interleaved) == n:
-                        return dataset.select(interleaved)
+
+
+
         return dataset.select(interleaved)
 
     def _resolve_external_data(
@@ -802,13 +802,13 @@ her fear and anger)."""
             # Validate that all turns are fully resolved (no placeholders remaining)
             for example in dataset:
                 for turn in example["turns"]:
-                    if turn.startswith(TURNS_PLACEHOLDER):
-                        raise ValueError(
-                            f"Unresolved data placeholder found in question_id={example['question_id']} "
-                            f"(category={example['category']}). Please run "
-                            f"`python prepare_data.py --config <config>` first to download "
-                            f"and resolve all external data references."
-                        )
+
+
+
+
+
+
+
 
         self._resolved_dataset = dataset
         self.data = [

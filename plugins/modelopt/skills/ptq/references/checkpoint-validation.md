@@ -144,7 +144,7 @@ for w in linear_weights:
     base = w.rsplit('.weight', 1)[0]
     algo = declared_algo(base)
     has_scales = any(f'{base}.{s}' in all_keys for s in
-                     ['weight_scale', 'weight_scale_2', 'input_scale', 'activation_scale', 'weight_scale_inv'])
+
 
     if has_scales and algo not in ('BF16/EXCLUDED', 'UNDECLARED'):
         precision_counts[algo] += 1
