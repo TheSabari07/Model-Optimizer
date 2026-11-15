@@ -32,6 +32,7 @@
 
 """This module provides the command line interface (CLI) entry point for AutoCast."""
 
+import utils.session
 import argparse
 import sys
 
