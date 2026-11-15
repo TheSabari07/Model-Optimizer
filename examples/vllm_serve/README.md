@@ -38,15 +38,15 @@ for details about installing partial dependency sets.
 Step 1: Configure quantization settings.  
 You can either edit the `quant_config` dictionary in `vllm_serve_fakequant.py`, or set the following environment variables to control quantization behavior:
 
-| Variable        | Description                                      | Default             |
+| Variable        | Description
 |-----------------|--------------------------------------------------|---------------------|
-| QUANT_DATASET   | Dataset name for calibration                     | cnn_dailymail       |
+| QUANT_DATASET   | Dataset name for calibration
 | QUANT_CALIB_SIZE| Number of samples used for calibration           | 512                 |
-| QUANT_CFG       | Quantization config                              | None                |
-| KV_QUANT_CFG    | KV-cache quantization config                     | None                |
+| QUANT_CFG       | Quantization config
+| KV_QUANT_CFG    | KV-cache quantization config
 | QUANT_FILE_PATH | Optional path to exported quantizer state dict `quantizer_state.pth` | None |
 | MODELOPT_STATE_PATH | Optional path to exported `vllm_fq_modelopt_state.pth` (restores quantizer state and parameters) | None |
-| CALIB_BATCH_SIZE | Calibration batch size                           | 1                  |
+| CALIB_BATCH_SIZE | Calibration batch size
 | RECIPE_PATH      | Optional path to a ModelOpt PTQ recipe YAML  | None |
 
 Set these variables in your shell or Docker environment as needed to customize calibration.
