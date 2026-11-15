@@ -54,7 +54,7 @@ codex mcp add modelopt -- uvx --from \
 ```bash
 uv pip install -e tools/launcher    # sibling dep first
 uv pip install -e tools/mcp         # then this package
-modelopt-mcp                         # stdio server entry on PATH
+modelopt-mcp
 ```
 
 Both packages share the launcher's `core.py` orchestrator. The dev path relies on `[tool.uv.sources]` to point `modelopt-launcher` at `../launcher`.
@@ -179,11 +179,11 @@ tools/mcp/
 │   ├── __init__.py
 │   ├── server.py               # FastMCP entry; 9 tool definitions
 │   └── bridge.py               # thin wrapper over launcher's core.py
-│                               # + filesystem status/log helpers
-│                               # + tunnel/PR helpers (Phase 1.5)
+│
+│
 └── tests/
     └── test_bridge.py          # 32 unit tests, fully hermetic
-                                # (mocked subprocess + tmp_path fixtures)
+
 ```
 
 ## Phase 2 & beyond
